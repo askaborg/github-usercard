@@ -53,3 +53,77 @@ const followersArray = [];
   luishrd
   bigknell
 */
+
+const cardInsert = document.querySelector('.cards')
+
+axios.get('https://api.github.com/users/askaborg')      
+  .then(responseAskaborg => {
+    console.log('myCard',responseAskaborg)
+    
+    cardInsert.appendChild(createCard(responseAskaborg.data))
+  })
+
+  .catch(errorAskaborg => {
+    console.log('askaborg' + errorAskaborg)
+  })
+
+axios.get('https://api.github.com/users/bigknell/followers')
+  .then(responseFollowers => {
+    console.log('followers',responseFollowers)
+    responseFollowers.data.forEach(async (githubUser) => {
+      const followerUrl = await axios.get(githubUser.url)
+      cardInsert.appendChild(createCard(followerUrl.data))
+    })
+  })
+
+  .catch(errorFollowers => {
+    console.log('followers' + errorFollowers)
+  })
+
+function createCard(cardData) {
+  const cardDiv = document.createElement('div')
+  const cardImg = document.createElement('img')
+  cardImg.src = cardData.avatar_url
+  const cardDiv2 = document.createElement('div')
+  const cardH3Name = document.createElement('h3')
+  cardH3Name.textContent = cardData.name
+  const cardPUsername = document.createElement("p")
+  cardPUsername.textContent = cardData.login
+  const cardP2Location = document.createElement('p')
+  cardP2Location.textContent = "Location:  " + cardData.location
+  const cardP3Profile = document.createElement('p')
+  cardP3Profile.textContent = "Profile: "
+  const cardAProfileURL = document.createElement('a')
+  cardAProfileURL.textContent = cardData.html_url
+  const cardP4Followers = document.createElement('p')
+  cardP4Followers.textContent = "Followers: " + cardData.followers
+  const cardP5Following = document.createElement('p')
+  cardP5Following.textContent = "Following: " + cardData.following
+  const cardBio = document.createElement('p')
+  cardBio.textContent = "Bio " + cardData.bio
+
+  cardDiv.classList.add("card")
+  cardDiv2.classList.add("card-info")
+  cardH3Name.classList.add('name')
+  cardPUsername.classList.add('username')
+
+  cardDiv.appendChild(cardImg)
+  cardDiv.appendChild(cardDiv2)
+  cardDiv2.appendChild(cardH3Name)
+  cardDiv2.appendChild(cardP2Location)
+    
+  cardDiv2.appendChild(cardP3Profile)
+  cardP3Profile.appendChild(cardAProfileURL)
+  cardDiv2.appendChild(cardP4Followers)
+  cardDiv2.appendChild(cardP5Following)
+  cardDiv2.appendChild(cardBio)
+
+  return cardDiv
+}
+
+
+
+
+
+
+
